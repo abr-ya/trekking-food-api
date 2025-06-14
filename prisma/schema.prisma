@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @unique
+  email          String   @unique
+  password       String?
+  name           String
+  profileImage   String?
+
+  createdRecipes Recipe[]
+  hikings        Hiking[]
+}
+
+model Recipe {
+  id          String               @id @default(uuid())
+  name        String               @unique
+  description String?
+  kkal        Float?
+  ingredients Recipe_Ingredients[]
+  user        User                 @relation(fields: [userId], references: [id])
+  userId      String
+  categoryID  String?
+  category    Category?            @relation(fields: [categoryID], references: [id])
+  createdAt   DateTime             @default(now())
+  eatings     Eating[] //@relation("Eating_to_Recipe")
+}
+
+model Category {
+  id     String   @id @default(uuid())
+  name   String   @unique
+  recipe Recipe[]
+}
+
+model Ingredient {
+  id        String               @id @default(uuid())
+  name      String               @unique
+  price     Float?
+  kkal      Float                @default(0)
+  recipes   Recipe_Ingredients[]
+  createdAt DateTime             @default(now())
+}
+
+model Recipe_Ingredients {
+  id           String     @id @default(uuid())
+  recipeID     String?
+  recipe       Recipe?    @relation(fields: [recipeID], references: [id])
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  ingredientId String
+  quantity     Float?
+}
+
+model Hiking {
+  id           String   @id @default(uuid())
+  name         String
+  membersTotal Int      @default(1)
+  daysTotal    Int
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  eatings      Eating[]
+}
+
+model Eating {
+  id           String      @id @default(uuid())
+  hikingId     String
+  hiking       Hiking      @relation(fields: [hikingId], references: [id])
+  dayNumber    Int
+  eatingTimeId String
+  eatingTime   Eating_Time @relation(fields: [eatingTimeId], references: [id])
+  recipes      Recipe[] //@relation("Eating_to_Recipe")
+}
+
+model Eating_Time {
+  id     String   @id @default(uuid())
+  name   String   @unique
+  eating Eating[]
+}
