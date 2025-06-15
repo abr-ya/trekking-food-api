@@ -35,7 +35,7 @@ model Recipe {
   categoryID  String?
   category    Category?            @relation(fields: [categoryID], references: [id])
   createdAt   DateTime             @default(now())
-  eatings     Eating[] //@relation("Eating_to_Recipe")
+  eatings     Eating[]
 }
 
 model Category {
@@ -79,7 +79,8 @@ model Eating {
   dayNumber    Int
   eatingTimeId String
   eatingTime   Eating_Time @relation(fields: [eatingTimeId], references: [id])
-  recipes      Recipe[] //@relation("Eating_to_Recipe")
+  recipeId     String
+  recipe       Recipe @relation(fields: [recipeId], references: [id])
 }
 
 model Eating_Time {
