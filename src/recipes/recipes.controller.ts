@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { RecipesService } from './recipes.service';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
+import { AddIngredientDto } from './dto/add-ingredient-dto';
 
 @Controller('recipes')
 export class RecipesController {
@@ -30,5 +31,16 @@ export class RecipesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.recipesService.remove(id);
+  }
+
+  // Ingredients
+  @Get(':id/ingredients')
+  findOneIngredients(@Param('id') id: string) {
+    return this.recipesService.findOneIngredients(id);
+  }
+
+  @Post(':id/ingredients')
+  addIngredient(@Param('id') id: string, @Body() addIngredientDto: AddIngredientDto) {
+    return this.recipesService.addIngredient(id, addIngredientDto);
   }
 }

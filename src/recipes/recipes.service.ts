@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/database.service';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
+import { AddIngredientDto } from './dto/add-ingredient-dto';
 
 const DEMO: string[] = [
   'b1e569fc-d525-4d26-b4fa-c60faf423cdc', // Каша гречневая
@@ -9,6 +10,24 @@ const DEMO: string[] = [
   '728e2fd0-f788-42c9-b8d5-6acc23245b7b', // Каша овсяная
   '87dcfe5b-11ce-4b07-867c-9249240d6cb6', // Суп харчо
 ];
+
+const recipeDetailSelector = {
+  name: true,
+  description: true,
+  ingredients: {
+    select: {
+      id: true,
+      ingredient: {
+        select: {
+          id: true,
+          name: true,
+          kkal: true,
+        },
+      },
+      quantity: true,
+    },
+  },
+};
 
 @Injectable()
 export class RecipesService {
@@ -24,7 +43,7 @@ export class RecipesService {
   }
 
   async findOne(id: string) {
-    const recipe = await this.PrismaService.recipe.findUnique({ where: { id } });
+    const recipe = await this.PrismaService.recipe.findUnique({ where: { id }, select: recipeDetailSelector });
     if (!recipe) throw new NotFoundException('Recipe Not Found');
 
     return recipe;
@@ -44,5 +63,19 @@ export class RecipesService {
     if (!recipe) throw new NotFoundException(`Recipe ${id} not found!`);
 
     return this.PrismaService.recipe.delete({ where: { id } });
+  }
+
+  // Ingredients part
+  async findOneIngredients(id: string) {
+    const recipe = await this.PrismaService.recipe.findUnique({ where: { id }, select: recipeDetailSelector });
+    if (!recipe) throw new NotFoundException('Recipe Not Found');
+
+    return recipe.ingredients;
+  }
+
+  async addIngredient(recipeID: string, addIngredientDto: AddIngredientDto) {
+    const data = { recipeID, ...addIngredientDto };
+    const newRecipe = await this.PrismaService.recipe_Ingredients.create({ data });
+    return newRecipe;
   }
 }
