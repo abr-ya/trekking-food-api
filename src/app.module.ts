@@ -8,9 +8,10 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { IngredientsModule } from './ingredients/ingredients.module';
 import { EatingsModule } from './eatings/eatings.module';
+import { RecipesModule } from './recipes/recipes.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), UsersModule, DatabaseModule, IngredientsModule, AuthModule, EatingsModule],
+  imports: [ConfigModule.forRoot(), UsersModule, DatabaseModule, IngredientsModule, AuthModule, EatingsModule, RecipesModule],
   controllers: [AppController],
   providers: [AppService],
 })
