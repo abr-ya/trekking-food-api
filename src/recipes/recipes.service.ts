@@ -78,4 +78,11 @@ export class RecipesService {
     const newRecipe = await this.PrismaService.recipe_Ingredients.create({ data });
     return newRecipe;
   }
+
+  async removeIngredient(id: string) {
+    const recipeIngredient = await this.PrismaService.recipe_Ingredients.findUnique({ where: { id } });
+    if (!recipeIngredient) throw new NotFoundException('Ingredient in Recipe Not Found');
+
+    return this.PrismaService.recipe_Ingredients.delete({ where: { id } });
+  }
 }

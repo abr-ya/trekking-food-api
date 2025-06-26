@@ -43,4 +43,9 @@ export class RecipesController {
   addIngredient(@Param('id') id: string, @Body() addIngredientDto: AddIngredientDto) {
     return this.recipesService.addIngredient(id, addIngredientDto);
   }
+
+  @Delete(':id/ingredients/:ingredientId')
+  removeIngredient(@Param('ingredientId') ingredientId: string) {
+    return this.recipesService.removeIngredient(ingredientId);
+  }
 }
