@@ -9,9 +9,10 @@ import { AuthModule } from './auth/auth.module';
 import { IngredientsModule } from './ingredients/ingredients.module';
 import { EatingsModule } from './eatings/eatings.module';
 import { RecipesModule } from './recipes/recipes.module';
+import { HikingsModule } from './hikings/hikings.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), UsersModule, DatabaseModule, IngredientsModule, AuthModule, EatingsModule, RecipesModule],
+  imports: [ConfigModule.forRoot(), UsersModule, DatabaseModule, IngredientsModule, AuthModule, EatingsModule, RecipesModule, HikingsModule],
   controllers: [AppController],
   providers: [AppService],
 })
