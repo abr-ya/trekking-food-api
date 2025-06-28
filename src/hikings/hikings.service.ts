@@ -8,6 +8,33 @@ const DEMO: string[] = [
   'f430c801-5567-406b-9fdf-b31f7f14ba35', // Фаны 2 к.с.
 ];
 
+const hikingDetailSelector = {
+  id: true,
+  name: true,
+  daysTotal: true,
+  membersTotal: true,
+  eatings: {
+    select: {
+      id: true,
+      dayNumber: true,
+      eatingTimeId: true,
+      eatingTime: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      recipeId: true,
+      recipe: {
+        select: {
+          name: true,
+          kkal: true,
+        },
+      },
+    },
+  },
+};
+
 @Injectable()
 export class HikingsService {
   constructor(private readonly PrismaService: PrismaService) {}
@@ -23,7 +50,7 @@ export class HikingsService {
   }
 
   async findOne(id: string) {
-    const hiking = await this.PrismaService.hiking.findUnique({ where: { id } });
+    const hiking = await this.PrismaService.hiking.findUnique({ where: { id }, select: hikingDetailSelector });
     if (!hiking) throw new NotFoundException(`Hiking Not Found (${id})`);
 
     return hiking;
