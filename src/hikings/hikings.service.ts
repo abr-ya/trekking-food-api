@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/database.service';
 import { CreateHikingDto } from './dto/create-hiking.dto';
 import { UpdateHikingDto } from './dto/update-hiking.dto';
+import { recipeIngridientsSelector } from 'src/recipes/recipes.service';
 
 const DEMO: string[] = [
   '69090591-dc52-4d0a-a817-bed18592d0bc', // Карелия - лыжный н/к
@@ -35,6 +36,34 @@ const hikingDetailSelector = {
   },
 };
 
+const hikingDetailWithProductsSelector = {
+  id: true,
+  name: true,
+  daysTotal: true,
+  membersTotal: true,
+  eatings: {
+    select: {
+      id: true,
+      dayNumber: true,
+      eatingTimeId: true,
+      eatingTime: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      recipeId: true,
+      recipe: {
+        select: {
+          name: true,
+          kkal: true,
+          ingredients: { select: recipeIngridientsSelector },
+        },
+      },
+    },
+  },
+};
+
 @Injectable()
 export class HikingsService {
   constructor(private readonly PrismaService: PrismaService) {}
@@ -51,6 +80,16 @@ export class HikingsService {
 
   async findOne(id: string) {
     const hiking = await this.PrismaService.hiking.findUnique({ where: { id }, select: hikingDetailSelector });
+    if (!hiking) throw new NotFoundException(`Hiking Not Found (${id})`);
+
+    return hiking;
+  }
+
+  async findOneWithProducts(id: string) {
+    const hiking = await this.PrismaService.hiking.findUnique({
+      where: { id },
+      select: hikingDetailWithProductsSelector,
+    });
     if (!hiking) throw new NotFoundException(`Hiking Not Found (${id})`);
 
     return hiking;

@@ -22,6 +22,11 @@ export class HikingsController {
     return this.hikingsService.findOne(id);
   }
 
+  @Get('with-products/:id')
+  findOneWithProducts(@Param('id') id: string) {
+    return this.hikingsService.findOneWithProducts(id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateHikingDto: UpdateHikingDto) {
     return this.hikingsService.update(id, updateHikingDto);

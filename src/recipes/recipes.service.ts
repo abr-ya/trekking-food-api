@@ -11,21 +11,23 @@ const DEMO: string[] = [
   '87dcfe5b-11ce-4b07-867c-9249240d6cb6', // Суп харчо
 ];
 
+export const recipeIngridientsSelector = {
+  id: true,
+  ingredient: {
+    select: {
+      id: true,
+      name: true,
+      kkal: true,
+    },
+  },
+  quantity: true,
+};
+
 const recipeDetailSelector = {
   name: true,
   description: true,
   ingredients: {
-    select: {
-      id: true,
-      ingredient: {
-        select: {
-          id: true,
-          name: true,
-          kkal: true,
-        },
-      },
-      quantity: true,
-    },
+    select: recipeIngridientsSelector,
   },
 };
 
