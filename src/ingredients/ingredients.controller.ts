@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, Query } from '@nestjs/common';
 import { IngredientsService } from './ingredients.service';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient-dto';
@@ -14,8 +14,10 @@ export class IngredientsController {
   }
 
   @Get()
-  findAll() {
-    return this.ingredientsService.findAll();
+  findAll(@Query('like') like: string, @Query('page') page: string) {
+    console.log(like, page);
+
+    return this.ingredientsService.findAll(like);
   }
 
   @Get(':id')

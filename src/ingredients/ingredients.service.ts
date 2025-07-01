@@ -20,8 +20,12 @@ export class IngredientsService {
     return newInredient;
   }
 
-  async findAll() {
-    return this.PrismaService.ingredient.findMany();
+  async findAll(search: string) {
+    return this.PrismaService.ingredient.findMany({
+      where: {
+        name: { contains: search, mode: 'insensitive' },
+      },
+    });
   }
 
   async findOne(id: string) {
