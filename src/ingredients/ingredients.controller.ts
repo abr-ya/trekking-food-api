@@ -15,9 +15,9 @@ export class IngredientsController {
 
   @Get()
   findAll(@Query('like') like: string, @Query('page') page: string) {
-    console.log(like, page);
+    // console.log(like, page);
 
-    return this.ingredientsService.findAll(like);
+    return this.ingredientsService.findAll(like, +page);
   }
 
   @Get(':id')

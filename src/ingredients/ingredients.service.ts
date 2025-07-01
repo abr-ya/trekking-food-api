@@ -11,6 +11,13 @@ const DEMO = [
   '026e9e82-847d-4c35-8b7a-981d6cf82aa9',
 ];
 
+const PAGE_SIZE = 10;
+const createPagination = (page: number | string | undefined) => {
+  if (!page || !Number.isInteger(page)) return { skip: 0, take: PAGE_SIZE };
+
+  return { skip: ((page as number) - 1) * PAGE_SIZE, take: PAGE_SIZE };
+};
+
 @Injectable()
 export class IngredientsService {
   constructor(private readonly PrismaService: PrismaService) {}
@@ -20,12 +27,28 @@ export class IngredientsService {
     return newInredient;
   }
 
-  async findAll(search: string) {
-    return this.PrismaService.ingredient.findMany({
+  async findAll(search: string, page: number) {
+    const needPage = !!page && Number.isInteger(page);
+    const searchResult = await this.PrismaService.ingredient.findMany({
       where: {
         name: { contains: search, mode: 'insensitive' },
       },
     });
+
+    if (!needPage) return searchResult;
+
+    const totalItems = searchResult.length;
+    const content = await this.PrismaService.ingredient.findMany({
+      where: {
+        name: { contains: search, mode: 'insensitive' },
+      },
+      ...createPagination(page),
+      orderBy: {
+        name: 'asc',
+      },
+    });
+
+    return { content, totalItems };
   }
 
   async findOne(id: string) {
