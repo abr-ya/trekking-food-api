@@ -3,6 +3,7 @@ import { RecipesService } from './recipes.service';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { AddIngredientDto } from './dto/add-ingredient-dto';
+import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 
 @Controller('recipes')
 export class RecipesController {
@@ -42,6 +43,11 @@ export class RecipesController {
   @Post(':id/ingredients')
   addIngredient(@Param('id') id: string, @Body() addIngredientDto: AddIngredientDto) {
     return this.recipesService.addIngredient(id, addIngredientDto);
+  }
+
+  @Patch(':id/ingredients/:ingredientId')
+  updateIngredient(@Param('ingredientId') ingredientId: string, @Body() updateIngredientDto: UpdateIngredientDto) {
+    return this.recipesService.updateIngredient(ingredientId, updateIngredientDto);
   }
 
   @Delete(':id/ingredients/:ingredientId')

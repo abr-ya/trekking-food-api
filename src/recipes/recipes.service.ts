@@ -3,6 +3,7 @@ import { PrismaService } from 'src/database/database.service';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { AddIngredientDto } from './dto/add-ingredient-dto';
+import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 
 const DEMO: string[] = [
   'b1e569fc-d525-4d26-b4fa-c60faf423cdc', // Каша гречневая
@@ -79,6 +80,13 @@ export class RecipesService {
     const data = { recipeID, ...addIngredientDto };
     const newRecipe = await this.PrismaService.recipe_Ingredients.create({ data });
     return newRecipe;
+  }
+
+  async updateIngredient(id: string, updateIngredientDto: UpdateIngredientDto) {
+    const recipeIngredient = await this.PrismaService.recipe_Ingredients.findUnique({ where: { id } });
+    if (!recipeIngredient) throw new NotFoundException('Ingredient in Recipe Not Found');
+
+    return this.PrismaService.recipe_Ingredients.update({ where: { id }, data: updateIngredientDto });
   }
 
   async removeIngredient(id: string) {
