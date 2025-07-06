@@ -95,6 +95,26 @@ export class HikingsService {
     return hiking;
   }
 
+  async findOneForShopping(id: string) {
+    const hiking = await this.PrismaService.hiking.findUnique({ where: { id } });
+    if (!hiking) throw new NotFoundException(`Hiking Not Found (${id})`);
+
+    const result = await this.PrismaService.$queryRaw`select i.id, i.name, sum(ri.quantity)
+      from "public"."Ingredient" i
+      join "public"."Recipe_Ingredients" ri
+      on ri."ingredientId" = i.id
+      join "public"."Recipe" r
+      on r.id  = ri."recipeID"
+      join "public"."Eating" e
+      on e."recipeId" = r.id
+      join "public"."Hiking" h
+      on h.id = e."hikingId"
+      where "hikingId" = ${id}
+      group by i.id`;
+
+    return result;
+  }
+
   async update(id: string, updateHikingDto: UpdateHikingDto) {
     const hiking = await this.PrismaService.hiking.findUnique({ where: { id } });
     if (!hiking) throw new NotFoundException(`Hiking ${id} not found!`);
